@@ -1,9 +1,12 @@
 import os
-import google.generativeai as genai
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from typing import List, Optional
+
+import google.genai as genai
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from google.api_core.exceptions import ResourceExhausted
+from pydantic import BaseModel
+from google.genai import types as genai_types
 
 from dotenv import load_dotenv
 
@@ -42,11 +45,7 @@ except FileNotFoundError:
     COMPANY_INFO = "Tars Group is a technology company. (Default placeholder)"
 
 # --- Gemini Setup ---
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-2.0-flash') # Updated to available model
-else:
-    model = None
+client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 # --- Models ---
 class ChatMessage(BaseModel):
@@ -87,49 +86,38 @@ async def root():
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
-    if not model:
+    if not client:
         raise HTTPException(status_code=500, detail="Gemini API Key not configured.")
 
     user_msg = request.message
-    
-    # Construct the full prompt with history
-    # Note: Gemini 1.5 Flash supports system instructions better, but for simple use:
-    # We'll prepend the system prompt to the chat session or just send it as context.
-    
-    chat_history = []
-    # Add system prompt as the first part of the context (or use system_instruction if using that API version)
-    # For simplicity with the standard generate_content, we'll just prepend context to the latest message 
-    # or keep a running history.
-    
-    # Let's use a simple approach: Send context + history + current message.
-    
-    # Format history for the model
-    gemini_history = []
+
+    # Build conversation context for the Gemini API
+    contents = [genai_types.Content(role="user", parts=[SYSTEM_PROMPT])]
+
     for msg in request.history:
         role = "user" if msg.role == "user" else "model"
-        gemini_history.append({"role": role, "parts": [msg.content]})
-    
-    # Start a chat session
-    chat = model.start_chat(history=gemini_history)
-    
-    # Send the message with the system prompt context (injected into the message for this turn to ensure it's fresh)
-    # Alternatively, we could have set it at the start. 
-    # Let's try sending the system prompt + user message combined for the current turn if history is empty,
-    # or just rely on the model's ability to handle the context if we inject it.
-    
-    full_prompt = f"{SYSTEM_PROMPT}\n\nUser: {user_msg}"
-    
+        contents.append(genai_types.Content(role=role, parts=[msg.content]))
+
+    contents.append(genai_types.Content(role="user", parts=[user_msg]))
+
     try:
-        response = chat.send_message(full_prompt)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=contents,
+        )
+
         text_response = response.text
-        
+
         action = None
         if "[CONTACT_PAGE]" in text_response:
             action = "contact_support"
             text_response = text_response.replace("[CONTACT_PAGE]", "").strip()
-            
+
         return ChatResponse(response=text_response, action=action)
-        
+
+    except ResourceExhausted as e:
+        # Surface quota/rate limit errors clearly to the client
+        raise HTTPException(status_code=429, detail="Gemini quota exceeded. Please wait and try again." ) from e
     except Exception as e:
         print(f"Error calling Gemini: {e}")
         raise HTTPException(status_code=500, detail=str(e))
