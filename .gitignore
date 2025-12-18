@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+.env.local
+.env.*.local
 .venv
 venv/
 dist/
@@ -12,3 +14,7 @@ build/
 .coverage
 frontend/node_modules/
 backend/__pycache__/
+*.key
+*.pem
+.idea/
+.vscode/local.settings.json
