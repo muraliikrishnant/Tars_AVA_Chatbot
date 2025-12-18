@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 google-genai
+google-api-core
 requests
 beautifulsoup4
 python-multipart
