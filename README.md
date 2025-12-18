@@ -23,7 +23,19 @@ Install dependencies (if not already done):
 pip install -r requirements.txt
 ```
 
-**IMPORTANT**: You must set your Gemini API Key.
+**IMPORTANT**: Set up your environment variables.
+
+Create a `.env` file in the `backend` directory by copying the example:
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and add your Gemini API Key:
+```bash
+GEMINI_API_KEY=your_actual_api_key_here
+```
+
+**Alternative**: You can also export the API key directly:
 ```bash
 export GEMINI_API_KEY="your_api_key_here"
 ```
