@@ -4,4 +4,4 @@ google-generativeai
 requests
 beautifulsoup4
 python-multipart
-python-dotenv
+python-dotenvgunicorn

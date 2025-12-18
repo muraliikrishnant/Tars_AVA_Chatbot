@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
 import './ChatWidget.css';
 
+// Get API URL from environment or default to production
+const API_URL = import.meta.env.VITE_API_URL || process.env.REACT_APP_API_URL || 'https://ava-chatbot-backend.onrender.com';
+
 const ChatWidget = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
@@ -40,7 +43,7 @@ const ChatWidget = () => {
             // We'll send the last few messages as history to keep context
             const historyToSend = messages.map(m => ({ role: m.role, content: m.content }));
 
-            const response = await fetch('http://localhost:8000/chat', {
+            const response = await fetch(`${API_URL}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
