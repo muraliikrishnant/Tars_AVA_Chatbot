@@ -92,13 +92,13 @@ async def chat_endpoint(request: ChatRequest):
     user_msg = request.message
 
     # Build conversation context for the Gemini API
-    contents = [genai_types.Content(role="user", parts=[SYSTEM_PROMPT])]
+    contents = [genai_types.Content(role="user", parts=[genai_types.Part.from_text(SYSTEM_PROMPT)])]
 
     for msg in request.history:
         role = "user" if msg.role == "user" else "model"
-        contents.append(genai_types.Content(role=role, parts=[msg.content]))
+        contents.append(genai_types.Content(role=role, parts=[genai_types.Part.from_text(msg.content)]))
 
-    contents.append(genai_types.Content(role="user", parts=[user_msg]))
+    contents.append(genai_types.Content(role="user", parts=[genai_types.Part.from_text(user_msg)]))
 
     try:
         response = client.models.generate_content(
