@@ -1,0 +1,94 @@
+PROJECT TECHNOLOGY REPORT
+=========================
+
+1. PROGRAMMING LANGUAGES
+------------------------
+
+1.1. Python (Backend)
+   - Role: Primary language for the server-side application.
+   - Usage: Handles API requests, business logic, and integration with the AI model.
+   - Version: 3.x (Implied by usage of modern libraries).
+
+1.2. JavaScript (Frontend)
+   - Role: Primary language for the client-side application.
+   - Usage: Powers the interactive user interface, state management, and API communication.
+   - Specification: ECMAScript Modules (ESM) as indicated by "type": "module" in package.json.
+
+1.3. HTML5 (HyperText Markup Language)
+   - Role: Structure of the web application.
+   - Usage: Defines the semantic structure of the chat interface and landing page.
+
+1.4. CSS3 (Cascading Style Sheets)
+   - Role: Styling and Layout.
+   - Usage: Controls the visual appearance, including the chat widget design, animations, and responsiveness.
+
+2. SOFTWARE TOOLS & FRAMEWORKS
+------------------------------
+
+2.1. Backend Frameworks & Libraries
+
+   - FastAPI
+     - Description: A modern, fast (high-performance) web framework for building APIs with Python 3.8+ based on standard Python type hints.
+     - Purpose: Serves as the core web server, defining endpoints like `/chat` and handling HTTP requests/responses.
+
+   - Uvicorn
+     - Description: An ASGI (Asynchronous Server Gateway Interface) web server implementation.
+     - Purpose: Runs the FastAPI application, handling the low-level network connections.
+
+   - Google Generative AI SDK (`google-generativeai`)
+     - Description: The official Python client library for Google's Gemini models.
+     - Purpose: Facilitates communication with the Gemini API for generating chatbot responses.
+
+   - BeautifulSoup4 (`beautifulsoup4`)
+     - Description: A Python library for pulling data out of HTML and XML files.
+     - Purpose: Used for web scraping to extract company information from the Tars Group website to populate the chatbot's knowledge base.
+
+   - Requests (`requests`)
+     - Description: A simple, yet elegant HTTP library for Python.
+     - Purpose: Used in conjunction with BeautifulSoup to fetch web pages for scraping.
+
+   - Python-Multipart (`python-multipart`)
+     - Description: A streaming multipart parser for Python.
+     - Purpose: Required by FastAPI to handle form data processing (often a dependency for file uploads or specific request types).
+
+   - Python-Dotenv (`python-dotenv`)
+     - Description: Reads key-value pairs from a `.env` file and can set them as environment variables.
+     - Purpose: Manages configuration and secrets (like the API Key) securely.
+
+   - Pydantic
+     - Description: Data validation and settings management using python type annotations.
+     - Purpose: Defines the data models (`ChatMessage`, `ChatRequest`, `ChatResponse`) to ensure API inputs and outputs are valid.
+
+2.2. Frontend Frameworks & Libraries
+
+   - React
+     - Description: A JavaScript library for building user interfaces.
+     - Version: ^19.2.0
+     - Purpose: Component-based architecture for building the chat widget and application UI.
+
+   - Vite
+     - Description: A build tool that aims to provide a faster and leaner development experience for modern web projects.
+     - Version: ^7.2.4
+     - Purpose: Handles development server, hot module replacement (HMR), and bundling the application for production.
+
+   - Lucide React
+     - Description: A clean and consistent icon library for React.
+     - Version: ^0.555.0
+     - Purpose: Provides the icons used in the UI (e.g., chat bubbles, close buttons, send icons).
+
+   - ESLint
+     - Description: A static code analysis tool for identifying problematic patterns in JavaScript code.
+     - Purpose: Ensures code quality and consistency during development.
+
+3. APPLICATION PROGRAMMING INTERFACES (APIs)
+--------------------------------------------
+
+3.1. Google Gemini API
+   - Provider: Google DeepMind / Google AI
+   - Model Used: `gemini-2.0-flash`
+   - Purpose: The "brain" of the chatbot. It processes user input, maintains context (via history), and generates natural language responses based on the provided system prompt and company information.
+
+3.2. Internal REST API (Self-Hosted)
+   - Endpoint: `POST /chat`
+   - Description: The custom endpoint created in `main.py`.
+   - Purpose: Acts as the bridge between the frontend React app and the backend logic (which calls Gemini). It handles the request formatting and response parsing.
