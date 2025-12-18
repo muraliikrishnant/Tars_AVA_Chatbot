@@ -36,8 +36,9 @@ app.add_middleware(
 
 # --- Data Loading ---
 COMPANY_INFO = ""
+DATA_FILE = os.path.join(os.path.dirname(__file__), "data", "company_info.txt")
 try:
-    with open("backend/data/company_info.txt", "r") as f:
+    with open(DATA_FILE, "r") as f:
         COMPANY_INFO = f.read()
     print("Loaded company info.")
 except FileNotFoundError:
