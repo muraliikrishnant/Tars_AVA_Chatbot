@@ -3,7 +3,7 @@ import { MessageCircle, X, Send } from 'lucide-react';
 import './ChatWidget.css';
 
 // Get API URL from environment or default to production
-const API_URL = import.meta.env.VITE_API_URL || process.env.REACT_APP_API_URL || 'https://ava-chatbot-backend.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || process.env.REACT_APP_API_URL || 'https://tars-ava-chatbot.onrender.com';
 
 const ChatWidget = () => {
     const [isOpen, setIsOpen] = useState(false);
