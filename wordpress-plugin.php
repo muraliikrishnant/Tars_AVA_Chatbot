@@ -24,8 +24,8 @@ define('AVA_CHATBOT_VERSION', '1.0.0');
  */
 function ava_chatbot_enqueue_assets() {
     // Update these URLs to your deployed frontend and backend URLs
-    $frontend_url = 'https://YOUR_VERCEL_URL.vercel.app'; // Change this!
-    $backend_url = 'https://YOUR_RENDER_URL.onrender.com'; // Change this!
+    $frontend_url = 'https://tars-ava-chatbot-g1qrp2b84.vercel.app'; // Change this!
+    $backend_url = 'https://tars-ava-chatbot.onrender.com'; // Change this!
     
     // Enqueue frontend React app
     wp_enqueue_script(
